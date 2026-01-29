@@ -1,0 +1,65 @@
+import { computed } from '@angular/core';
+import { signalStore, withState, withComputed, withMethods, patchState } from '@ngrx/signals';
+import { User } from '@core/models';
+import { environment } from '@env/environment';
+
+interface AuthState {
+  token: string | null;
+  refreshToken: string | null;
+  user: User | null;
+}
+
+const keys = environment.storageKeys;
+
+function loadInitialState(): AuthState {
+  try {
+    const token = localStorage.getItem(keys.authToken);
+    const refreshToken = localStorage.getItem(keys.refreshToken);
+    const userJson = localStorage.getItem(keys.user);
+    return {
+      token,
+      refreshToken,
+      user: userJson ? JSON.parse(userJson) : null,
+    };
+  } catch {
+    return { token: null, refreshToken: null, user: null };
+  }
+}
+
+export const AuthStore = signalStore(
+  { providedIn: 'root' },
+  withState<AuthState>(loadInitialState()),
+  withComputed((store) => ({
+    isAuthenticated: computed(() => !!store.token() && !!store.user()),
+    fullName: computed(() => {
+      const user = store.user();
+      return user ? `${user.first_name} ${user.last_name}` : '';
+    }),
+    userRoles: computed(() => store.user()?.roles ?? []),
+    isRestaurantOwner: computed(() => store.user()?.roles.includes('restaurant_owner') ?? false),
+    isCourier: computed(() => store.user()?.roles.includes('courier') ?? false),
+    isAdmin: computed(() => store.user()?.roles.includes('admin') ?? false),
+  })),
+  withMethods((store) => ({
+    setCredentials(credentials: { token: string; refreshToken: string; user: User }): void {
+      patchState(store, {
+        token: credentials.token,
+        refreshToken: credentials.refreshToken,
+        user: credentials.user,
+      });
+      localStorage.setItem(keys.authToken, credentials.token);
+      localStorage.setItem(keys.refreshToken, credentials.refreshToken);
+      localStorage.setItem(keys.user, JSON.stringify(credentials.user));
+    },
+    updateUser(user: User): void {
+      patchState(store, { user });
+      localStorage.setItem(keys.user, JSON.stringify(user));
+    },
+    logout(): void {
+      patchState(store, { token: null, refreshToken: null, user: null });
+      localStorage.removeItem(keys.authToken);
+      localStorage.removeItem(keys.refreshToken);
+      localStorage.removeItem(keys.user);
+    },
+  })),
+);
