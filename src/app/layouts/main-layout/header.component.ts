@@ -26,8 +26,7 @@ import { LanguageSwitcherComponent } from './language-switcher.component';
       <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <!-- Logo -->
         <a routerLink="/" class="flex items-center gap-2" [attr.aria-label]="'common.app.name' | translate">
-          <span class="text-2xl font-bold text-primary">just-eat</span>
-          <span class="text-sm text-muted-foreground">.ch</span>
+          <img src="/logo.svg" alt="just-eat.ch" class="h-8" />
         </a>
 
         <!-- Desktop Navigation -->

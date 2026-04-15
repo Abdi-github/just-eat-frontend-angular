@@ -10,8 +10,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
       <div class="w-full max-w-md">
         <div class="mb-8 text-center">
           <a routerLink="/" class="inline-block">
-            <span class="text-3xl font-bold text-primary">just-eat</span>
-            <span class="text-lg text-muted-foreground">.ch</span>
+            <img src="/logo.svg" alt="just-eat.ch" class="h-10" />
           </a>
         </div>
         <div class="rounded-xl border border-border bg-white p-6 shadow-card">

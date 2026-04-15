@@ -43,7 +43,7 @@ import { CurrencyChfPipe } from '@shared/pipes';
             @for (item of order()!.items ?? []; track item.menu_item_id) {
               <div class="flex items-center justify-between">
                 <span class="text-gray-700">{{ item.quantity }}x {{ item.name }}</span>
-                <span class="font-medium">{{ item.total_price || (item.unit_price * item.quantity) | currencyChf }}</span>
+                <span class="font-medium">{{ (item.total_price || (item.unit_price ?? 0) * (item.quantity ?? 0)) | currencyChf }}</span>
               </div>
             }
           </div>
