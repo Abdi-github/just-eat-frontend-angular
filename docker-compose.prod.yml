@@ -5,8 +5,8 @@ services:
       dockerfile: Dockerfile
     container_name: justeat_frontend_angular_prod
     restart: unless-stopped
-    ports:
-      - "4200:4200"
+    expose:
+      - "4200"
     environment:
       - NODE_ENV=production
     networks:
